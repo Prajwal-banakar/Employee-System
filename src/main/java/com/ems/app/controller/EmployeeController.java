@@ -1,110 +1,67 @@
 package com.ems.app.controller;
 
-import com.ems.app.pojo.ConfirmationForm;
-import com.ems.app.pojo.Employee;
-import com.ems.app.repo.EmployeeRepo;
+import com.ems.app.dto.EmployeeDto;
+import com.ems.app.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-@Controller
+@RestController
+@RequestMapping("/api/employees")
+@Tag(name = "Employee Management", description = "APIs for managing employees")
 public class EmployeeController {
 
     @Autowired
-    private EmployeeRepo employeeRepo;
+    private EmployeeService employeeService;
 
     @GetMapping("/")
-    public String homePage(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "index";
-    }
-
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "create";
+    @Operation(summary = "Welcome message", description = "Returns a welcome message.")
+    public String homePage() {
+        return "Welcome to the Employee Management System!";
     }
 
     @PostMapping("/create")
-    public String newEmployee(@ModelAttribute Employee employee, Model model) {
-        String empId = "EMP" + (1000 + new Random().nextInt(9000));
-        employee.setId(empId);
-
-        employeeRepo.save(employee);
-        model.addAttribute("successMessage", "Employee created successfully with ID: " + empId);
-
-        return "create";
+    @Operation(summary = "Create a new employee", description = "Creates a new employee with the provided details.")
+    public ResponseEntity<EmployeeDto> newEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+        EmployeeDto createdEmployee = employeeService.createEmployee(employeeDto);
+        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
     }
 
-    @GetMapping("/update")
-    public String showUpdateForm(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "update";
+    @PutMapping("/update")
+    @Operation(summary = "Update an existing employee", description = "Updates an existing employee's details.")
+    public ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+        EmployeeDto updatedEmployee = employeeService.updateEmployee(employeeDto);
+        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 
-    @PostMapping("/update")
-    public String updateEmployee(@ModelAttribute Employee employee, Model model) {
-        Optional<Employee> existingEmployee = employeeRepo.findById(employee.getId());
-
-        if (existingEmployee.isPresent()) {
-            employeeRepo.save(employee);
-            model.addAttribute("successMessage", "Employee updated successfully.");
+    @DeleteMapping("/remove/{id}")
+    @Operation(summary = "Remove an employee", description = "Removes an employee by their ID.")
+    public ResponseEntity<String> removeEmployee(@PathVariable String id) {
+        if (employeeService.getEmployeeById(id).isPresent()) {
+            employeeService.deleteEmployee(id);
+            return new ResponseEntity<>("Employee removed successfully.", HttpStatus.OK);
         } else {
-            model.addAttribute("errorMessage", "Employee with ID " + employee.getId() + " not found.");
+            return new ResponseEntity<>("Employee with ID " + id + " not found.", HttpStatus.NOT_FOUND);
         }
-
-        return "update";
     }
 
-    @GetMapping("/remove")
-    public String showRemoveForm(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "remove";
-    }
-
-    @PostMapping("/remove")
-    public String removeEmployee(@ModelAttribute Employee employee, Model model) {
-        Optional<Employee> existingEmployee = employeeRepo.findById(employee.getId());
-
-        if (existingEmployee.isPresent()) {
-            employeeRepo.deleteById(employee.getId());
-            model.addAttribute("successMessage", "Employee removed successfully.");
-        } else {
-            model.addAttribute("errorMessage", "Employee with ID " + employee.getId() + " not found.");
-        }
-
-        return "remove";
-    }
-
-    @GetMapping("/removeall")
-    public String showRemoveAllForm(Model model) {
-        model.addAttribute("confirmationForm", new ConfirmationForm());
-        return "removeall";
-    }
-
-    @PostMapping("/removeall")
-    public String removeAll(@ModelAttribute ConfirmationForm confirmationForm, Model model) {
-        if ("Yes".equalsIgnoreCase(confirmationForm.getConfirmation())) {
-            employeeRepo.deleteAll();
-            model.addAttribute("successMessage", "All employees deleted successfully.");
-        } else {
-            model.addAttribute("infoMessage", "Deletion canceled.");
-        }
-
-        return "removeall";
+    @DeleteMapping("/removeall")
+    @Operation(summary = "Remove all employees", description = "Removes all employees from the system.")
+    public ResponseEntity<String> removeAll() {
+        employeeService.deleteAllEmployees();
+        return new ResponseEntity<>("All employees deleted successfully.", HttpStatus.OK);
     }
 
     @GetMapping("/viewall")
-    public String viewAllEmployees(Model model) {
-        List<Employee> employees = employeeRepo.findAll();
-        model.addAttribute("employees", employees);
-        return "viewall";
+    @Operation(summary = "View all employees with pagination", description = "Returns a paginated list of all employees.")
+    public ResponseEntity<Page<EmployeeDto>> viewAllEmployees(Pageable pageable) {
+        Page<EmployeeDto> employees = employeeService.getAllEmployees(pageable);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 }

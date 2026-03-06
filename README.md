@@ -1,32 +1,36 @@
-# Employee Management System
+# Employee Management System API
 
-This is a simple employee management system built with Spring Boot, Spring Data MongoDB, and Thymeleaf.
+This is a robust and secure RESTful API for managing employees, built with Spring Boot and Spring Data MongoDB.
 
 ## Features
 
-*   Create new employees
-*   Update existing employee information
-*   Remove individual employees
-*   Remove all employees
+*   **CRUD Operations**: Create, Read, Update, and Delete employees.
+*   **API Documentation**: Interactive API documentation with Swagger UI.
+*   **Security**: Basic authentication to protect all endpoints.
+*   **Validation**: Server-side validation to ensure data integrity.
+*   **DTOs**: Decoupled API from the database model using Data Transfer Objects.
+*   **Pagination**: Paginated endpoint for retrieving all employees.
+*   **Centralized Exception Handling**: Consistent error responses for all exceptions.
 
 ## Technologies Used
 
 *   Java
 *   Spring Boot
 *   Spring Data MongoDB
-*   Thymeleaf
+*   Spring Security
+*   Springdoc OpenAPI (Swagger)
 *   Maven
 
 ## How to Run
 
 1.  **Prerequisites:**
-    *   Java Development Kit (JDK) 8 or later
+    *   Java Development Kit (JDK) 21 or later
     *   Apache Maven
     *   MongoDB
 
 2.  **Clone the repository:**
     ```bash
-    git clone https://github.com/Prajwal-banakar/Employee-Management-System
+    git clone https://github.com/your-username/EmployeeManagement.git
     ```
 
 3.  **Configure the database:**
@@ -40,19 +44,28 @@ This is a simple employee management system built with Spring Boot, Spring Data 
     mvn spring-boot:run
     ```
 
-5.  **Access the application:**
-    Open your web browser and go to `http://localhost:8080`.
+5.  **Access the API:**
+    The API will be running at `http://localhost:8080`.
 
-## Endpoints
+## API Documentation
 
-| Method | Endpoint      | Description                  |
-|--------|---------------|------------------------------|
-| GET    | `/`           | Displays the home page.      |
-| GET    | `/create`     | Displays the form to create a new employee. |
-| POST   | `/create`     | Creates a new employee.      |
-| GET    | `/update`     | Displays the form to update an employee. |
-| POST   | `/update`     | Updates an employee's information. |
-| GET    | `/remove`     | Displays the form to remove an employee. |
-| POST   | `/remove`     | Removes an employee.         |
-| GET    | `/removeall`  | Displays the form to remove all employees. |
-| POST   | `/removeall`  | Removes all employees.       |
+Once the application is running, you can access the interactive API documentation at:
+[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+## Security
+
+All endpoints are protected with basic authentication.
+
+*   **Username**: `user`
+*   **Password**: `password`
+
+## API Endpoints
+
+| Method | Endpoint                | Description                                      |
+|--------|-------------------------|--------------------------------------------------|
+| GET    | `/api/employees/`       | Returns a welcome message.                       |
+| POST   | `/api/employees/create` | Creates a new employee.                          |
+| PUT    | `/api/employees/update` | Updates an existing employee's details.          |
+| DELETE | `/api/employees/remove/{id}` | Removes an employee by their ID.                |
+| DELETE | `/api/employees/removeall` | Removes all employees from the system.           |
+| GET    | `/api/employees/viewall`| Returns a paginated list of all employees.       |
