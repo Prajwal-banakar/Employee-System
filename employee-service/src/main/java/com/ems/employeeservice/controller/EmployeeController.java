@@ -72,6 +72,6 @@ public class EmployeeController {
     @GetMapping("/{id}/salary")
     @Operation(summary = "Get employee salary", description = "Gets the salary of an employee from the payroll service.")
     public String getEmployeeSalary(@PathVariable String id) {
-        return restTemplate.getForObject("http://localhost:8081/api/payroll/" + id, String.class);
+        return restTemplate.getForObject("http://payroll-service/api/payroll/" + id, String.class);
     }
 }
