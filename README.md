@@ -2,19 +2,17 @@
 
 This project demonstrates the evolution of a monolithic application into a distributed system using a microservices architecture. It serves as a practical example for learning about service decomposition, service discovery, and modern authentication patterns.
 
-## Architecture
+> **For a detailed explanation of the architecture and workflow, please see the [USER_GUIDE.md](USER_GUIDE.md).**
 
-The system is composed of three core modules:
+## Modules
 
-*   **`discovery-server`**: A Netflix Eureka server that acts as a dynamic service registry. All other services register here, allowing them to find each other by name instead of using hardcoded URLs.
+This project is composed of three core modules. See the README in each module's directory for more specific details.
 
-*   **`employee-service`**: Manages core employee data (name, contact info, role) and handles user authentication with JWT.
+*   **[`discovery-server`](./discovery-server/README.md):** A Netflix Eureka server that acts as the service registry for the system.
+*   **[`employee-service`](./employee-service/README.md):** Manages core employee data and handles user authentication with JWT.
+*   **[`payroll-service`](./payroll-service/README.md):** Manages detailed employee salary and payroll data.
 
-*   **`payroll-service`**: Manages detailed employee salary and payroll data.
-
-This decoupled architecture makes the system more resilient, scalable, and easier to manage.
-
-## Technologies Used
+## Core Technologies
 
 *   **Java 21** & **Spring Boot 3**
 *   **Spring Cloud** (Netflix Eureka) for Service Discovery
