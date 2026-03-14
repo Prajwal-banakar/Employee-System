@@ -19,7 +19,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -50,7 +52,7 @@ public class EmployeeControllerTest {
     @Test
     public void testCreateEmployee() throws Exception {
         EmployeeDto employeeDto = new EmployeeDto();
-        employeeDto.setId("1");
+        employeeDto.setId(UUID.randomUUID().toString());
         employeeDto.setEmployeeName("John Doe");
         when(employeeService.createEmployee(any(EmployeeDto.class))).thenReturn(employeeDto);
 
@@ -58,7 +60,7 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"employeeName\":\"John Doe\",\"employeeEmail\":\"john.doe@example.com\",\"employeePhone\":1234567890,\"employeeGender\":\"Male\",\"employeeRole\":\"Developer\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.employeeName").value("John Doe"));
     }
 

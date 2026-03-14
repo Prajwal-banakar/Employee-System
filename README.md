@@ -6,17 +6,15 @@ This project is a distributed system that demonstrates key microservices concept
 
 The system is composed of two main services:
 
-*   **`employee-service`**: Manages core employee data (name, contact info, role). It handles employee creation, updates, and retrieval.
-*   **`payroll-service`**: Manages employee salary information. It is called by the `employee-service` to retrieve salary data.
-
-This setup is a great starting point for learning about distributed systems, service communication, and decomposition strategies.
+*   **`employee-service`**: Manages core employee data (name, contact info, role) and authentication.
+*   **`payroll-service`**: Manages employee salary information.
 
 ## Technologies Used
 
 *   **Java 21**
 *   **Spring Boot 3**
+*   **Spring Security (with JWT)**
 *   **Spring Data MongoDB**
-*   **Spring Security**
 *   **Springdoc OpenAPI (Swagger)**
 *   **Maven**
 
@@ -58,22 +56,36 @@ java -jar target/employee-service-0.0.1-SNAPSHOT.jar
 ```
 This service will start on port `8080`.
 
-## API Documentation
+## Security with JWT
 
-Once the `employee-service` is running, you can access its interactive API documentation at:
-[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+The API is secured using JSON Web Tokens (JWT). To access protected endpoints, you must first obtain a token.
 
-## Security
+**1. Get a Token**
 
-All endpoints on the `employee-service` are protected with basic authentication.
+Send a `POST` request to the `/auth/login` endpoint with the following credentials:
 
-*   **Username**: `user`
-*   **Password**: `password`
+```json
+{
+    "username": "user",
+    "password": "password"
+}
+```
+
+The response will contain a JWT.
+
+**2. Use the Token**
+
+Include the JWT in the `Authorization` header for all subsequent requests to protected endpoints:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
 
 ## API Endpoints (`employee-service`)
 
 | Method | Endpoint                      | Description                                      |
 |--------|-------------------------------|--------------------------------------------------|
+| POST   | `/auth/login`                 | Authenticates and returns a JWT.                 |
 | GET    | `/api/employees/`             | Returns a welcome message.                       |
 | POST   | `/api/employees/create`       | Creates a new employee.                          |
 | PUT    | `/api/employees/update`       | Updates an existing employee's details.          |

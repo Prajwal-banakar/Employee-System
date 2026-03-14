@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class EmployeeService {
@@ -23,8 +23,7 @@ public class EmployeeService {
 
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = employeeMapper.toEntity(employeeDto);
-        String empId = "EMP" + (1000 + new Random().nextInt(9000));
-        employee.setId(empId);
+        employee.setId(UUID.randomUUID().toString());
         return employeeMapper.toDto(employeeRepo.save(employee));
     }
 
