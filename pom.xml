@@ -20,6 +20,7 @@
         <module>payroll-service</module>
         <module>discovery-server</module>
         <module>gateway-service</module>
+        <module>leave-service</module>
     </modules>
 
     <properties>
